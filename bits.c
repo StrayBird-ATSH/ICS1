@@ -237,7 +237,26 @@ int logicalShift(int x, int n) {
  *   Rating: 4
  */
 int bitCount(int x) {
-    return 2;
+    /*
+     * Use different masks to add the ONEs from a smaller scope though the global scope
+     * First in the char level (i.e. each four bits) and then gradually double the scope
+     * until all the sums come into the same scope.
+     * */
+    int charLevelMaskBase_Byte = 0x11;
+    int charLevelMaskBase_Short = (charLevelMaskBase_Byte << 8) + charLevelMaskBase_Byte;
+    int charLevelMask = (charLevelMaskBase_Short << 16) + charLevelMaskBase_Short;
+    int charLevelSum =
+            (x & charLevelMask) + ((x >> 1) & charLevelMask) + ((x >> 2) & charLevelMask) + ((x >> 3) & charLevelMask);
+    int byteLevelMaskBase_Byte = 0x0F;
+    int byteLevelMaskBase_Short = (byteLevelMaskBase_Byte << 8) + byteLevelMaskBase_Byte;
+    int byteLevelMask = (byteLevelMaskBase_Short << 16) + byteLevelMaskBase_Short;
+    int byteLevelSum = (charLevelSum & byteLevelMask) + ((charLevelSum >> 4) & byteLevelMask);
+    int shortLevelMaskBase_Short = 0xFF;
+    int shortLevelMask = (shortLevelMaskBase_Short << 16) + shortLevelMaskBase_Short;
+    int shortLevelSum = (byteLevelSum & shortLevelMask) + ((byteLevelSum >> 8) & shortLevelMask);
+    int intLevelMask = (0xFF << 8) + 0xFF;
+    int intLevelSum = (shortLevelSum & intLevelMask) + ((shortLevelSum >> 16) & intLevelMask);
+    return intLevelSum;
 }
 
 /*
