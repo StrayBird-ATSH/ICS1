@@ -172,7 +172,8 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-    /*This question is the binary version of De Morgan's laws.
+    /*
+     * This question is the binary version of De Morgan's laws.
      * De Morgan's laws can be states as follows:
      * P AND Q = NOT(NOT P OR NOT Q)
      * */
@@ -188,7 +189,8 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-    /*First shift right the given integer corresponding
+    /*
+     * First shift right the given integer corresponding
      * number of bits according to the specified n;
      * And then use a switch to wipe off the redundant
      * bits on the left.
@@ -212,8 +214,19 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-
-    return 2;
+    /*
+     * The core of the algorithm is to generate a specified mask to
+     * wipe out the ones on the left end left by the arithmetic shift
+     * !!n is used to generate a whole one mask if 0 is get by input.
+     * Then the single digit mask is shifted according to the specified shifting
+     * digit to generate the final mask.
+     * */
+    int baseMask = !!n;
+    int leftBiasedSingleOne = baseMask << (32 + (~n + 1));
+    int mask = leftBiasedSingleOne + (~1 + 1);
+    int biasedResult = x >> n;
+    int maskedResult = biasedResult & mask;
+    return maskedResult;
 }
 
 /*
