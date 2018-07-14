@@ -267,9 +267,15 @@ int bitCount(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-
-
-    return 2;
+    /*
+     * The sign bits of any number and its opposite number other than ZERO has
+     * at least one 1, while the sign bits of both zero and its opposite number
+     * is 0. This function works under this phonomenen.
+     * */
+    int oppositeOfX = ~x + 1;
+    int result = (x >> 31) | (oppositeOfX >> 31);
+    result = result + 1;
+    return result;
 }
 
 /*
