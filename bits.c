@@ -172,6 +172,10 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
+    /*This question is the binary version of De Morgan's laws.
+     * De Morgan's laws can be states as follows:
+     * P AND Q = NOT(NOT P OR NOT Q)
+     * */
     return ~(~x | ~y);
 }
 
@@ -184,6 +188,11 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
+    /*First shift right the given integer corresponding
+     * number of bits according to the specified n;
+     * And then use a switch to wipe off the redundant
+     * bits on the left.
+     * */
     int initialMask = 0xFF;
     int hexadecimalBias = n;
     int binaryBias = hexadecimalBias << 3;
@@ -203,6 +212,7 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
+
     return 2;
 }
 
