@@ -199,9 +199,9 @@ int getByte(int x, int n) {
     int hexadecimalBias = n;
     int binaryBias = hexadecimalBias << 3;
     int biasedMask = initialMask << binaryBias;
-    int unbiasedResult = x & biasedMask;
-    int rawResult = unbiasedResult >> binaryBias;
-    int result = rawResult & initialMask;
+    int result = x & biasedMask;
+    result = result >> binaryBias;
+    result = result & initialMask;
     return result;
 }
 
@@ -224,9 +224,9 @@ int logicalShift(int x, int n) {
     int baseMask = !!n;
     int leftBiasedSingleOne = baseMask << (32 + (~n + 1));
     int mask = leftBiasedSingleOne + (~1 + 1);
-    int biasedResult = x >> n;
-    int maskedResult = biasedResult & mask;
-    return maskedResult;
+    int result = x >> n;
+    result = result & mask;
+    return result;
 }
 
 /*
@@ -245,18 +245,18 @@ int bitCount(int x) {
     int charLevelMaskBase_Byte = 0x11;
     int charLevelMaskBase_Short = (charLevelMaskBase_Byte << 8) + charLevelMaskBase_Byte;
     int charLevelMask = (charLevelMaskBase_Short << 16) + charLevelMaskBase_Short;
-    int charLevelSum =
-            (x & charLevelMask) + ((x >> 1) & charLevelMask) + ((x >> 2) & charLevelMask) + ((x >> 3) & charLevelMask);
     int byteLevelMaskBase_Byte = 0x0F;
     int byteLevelMaskBase_Short = (byteLevelMaskBase_Byte << 8) + byteLevelMaskBase_Byte;
     int byteLevelMask = (byteLevelMaskBase_Short << 16) + byteLevelMaskBase_Short;
-    int byteLevelSum = (charLevelSum & byteLevelMask) + ((charLevelSum >> 4) & byteLevelMask);
     int shortLevelMaskBase_Short = 0xFF;
     int shortLevelMask = (shortLevelMaskBase_Short << 16) + shortLevelMaskBase_Short;
-    int shortLevelSum = (byteLevelSum & shortLevelMask) + ((byteLevelSum >> 8) & shortLevelMask);
     int intLevelMask = (0xFF << 8) + 0xFF;
-    int intLevelSum = (shortLevelSum & intLevelMask) + ((shortLevelSum >> 16) & intLevelMask);
-    return intLevelSum;
+    int sum;
+    sum = (x & charLevelMask) + ((x >> 1) & charLevelMask) + ((x >> 2) & charLevelMask) + ((x >> 3) & charLevelMask);
+    sum = (sum & byteLevelMask) + ((sum >> 4) & byteLevelMask);
+    sum = (sum & shortLevelMask) + ((sum >> 8) & shortLevelMask);
+    sum = (sum & intLevelMask) + ((sum >> 16) & intLevelMask);
+    return sum;
 }
 
 /*
@@ -267,6 +267,8 @@ int bitCount(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
+
+
     return 2;
 }
 
