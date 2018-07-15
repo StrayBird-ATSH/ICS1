@@ -396,7 +396,52 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4
  */
 int ilog2(int x) {
-    return 2;
+
+    /*
+     * To find out where the most significant ONE is,
+     * dichotomy is used to simplify the code and to fin the result
+     * in the shortest lines. Each time the range is devided, the result,
+     * the logCount variable adds the result whether there is nor not ONEs
+     * in the corresponding range.
+     * */
+
+
+    int testMark;
+    int shiftOperand;
+    int shrinkedResult;
+    int logCount = 0;
+
+
+    testMark = !!(x >> 16);
+    shiftOperand = testMark << 4;
+    shrinkedResult = x >> shiftOperand;
+    logCount += shiftOperand;
+
+
+    testMark = !!(shrinkedResult >> 8);
+    shiftOperand = testMark << 3;
+    shrinkedResult = shrinkedResult >> shiftOperand;
+    logCount += shiftOperand;
+
+
+    testMark = !!(shrinkedResult >> 4);
+    shiftOperand = testMark << 2;
+    shrinkedResult = shrinkedResult >> shiftOperand;
+    logCount += shiftOperand;
+
+
+    testMark = !!(shrinkedResult >> 2);
+    shiftOperand = testMark << 1;
+    shrinkedResult = shrinkedResult >> shiftOperand;
+    logCount += shiftOperand;
+
+
+    testMark = !!(shrinkedResult >> 1);
+    shiftOperand = testMark;
+    logCount += shiftOperand;
+
+
+    return logCount;
 }
 
 /*
