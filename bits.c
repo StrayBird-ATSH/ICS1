@@ -405,7 +405,6 @@ int ilog2(int x) {
      * in the corresponding range.
      * */
 
-
     int testMark;
     int shiftOperand;
     int shrinkedResult;
@@ -456,7 +455,17 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
-    return 2;
+    /*
+     * Xor is used to negate the highest bit;
+     * Comparision is used to determine whether a
+     * number is NaN
+     * */
+    int oneOnLeftEnd = 1 << 31;
+    int fullOneExceptSignBit = ~oneOnLeftEnd;
+    int exponentAndFractionBits = uf & fullOneExceptSignBit;
+    if (exponentAndFractionBits > 0x7F800000)
+        return uf;
+    return uf ^ oneOnLeftEnd;
 }
 
 /*
@@ -469,7 +478,7 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-    return 2;
+
 }
 
 /*
