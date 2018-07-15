@@ -320,7 +320,17 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+    /*
+     * In the case of a negative number, a ONE will be added to
+     * the shifted number iff the negative number has a remainder
+     * during the shifting process.
+     * */
+    int remainder = x << (32 + (~n + 1));
+    int remainderExists = !!remainder;
+    int sign = (x >> 31) & remainderExists;
+    int shiftedNumber = x >> n;
+    int biasForNeg = shiftedNumber + (sign & (!!n));
+    return biasForNeg;
 }
 
 /*
@@ -331,7 +341,11 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-    return 2;
+    /*
+     * This is the formula for the two's complement integer
+     * denotion.
+     * */
+    return (~x + 1);
 }
 
 /*
@@ -342,6 +356,7 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
+
     return 2;
 }
 
