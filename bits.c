@@ -356,6 +356,10 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
+    /*
+     * The result is 1 when the sign bit is 0 but
+     * the number is not 0
+     * */
     int signBit = (x >> 31) & 0x1;
     int isZero = !x;
     return !(signBit | isZero);
@@ -369,7 +373,19 @@ int isPositive(int x) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-    return 2;
+    /*
+     * The question is devided into two parts:
+     * If x and y have different signs, then the
+     * result is instantly reachable;
+     * If x and y have the same sign, then  the result can
+     * be got by operating y minus x.
+     * */
+    int xSignFull = x >> 31;
+    int ySignFull = y >> 31;
+    int isDifferentSign = xSignFull ^ySignFull;
+    int differentSignCase = xSignFull & (!ySignFull);
+    int sameSignCase = !((y + (~x + 1)) >> 31);
+    return (differentSignCase & isDifferentSign) | (sameSignCase & (!isDifferentSign));
 }
 
 /*
