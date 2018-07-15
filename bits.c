@@ -356,8 +356,9 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
-
-    return 2;
+    int signBit = (x >> 31) & 0x1;
+    int isZero = !x;
+    return !(signBit | isZero);
 }
 
 /*
