@@ -285,7 +285,10 @@ int bang(int x) {
  *   Rating: 1
  */
 int tmin(void) {
-    return 2;
+    /*
+     * The minimum two's complement integer is 0x80000000
+     * */
+    return 0x80 << 24;
 }
 
 /*
@@ -298,7 +301,14 @@ int tmin(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-    return 2;
+    /*
+     * Determin whether an integer remains the same when
+     * only specified digits of numbers are used to denote
+     * the number.
+     * */
+    int bias = 32 + (~n + 1);
+    int result = !(x ^ ((x << bias) >> bias));
+    return result;
 }
 
 /*
