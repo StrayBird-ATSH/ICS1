@@ -465,7 +465,8 @@ unsigned float_neg(unsigned uf) {
     int exponentAndFractionBits = uf & fullOneExceptSignBit;
     if (exponentAndFractionBits > 0x7F800000)
         return uf;
-    return uf ^ oneOnLeftEnd;
+    else
+        return uf ^ oneOnLeftEnd;
 }
 
 /*
@@ -478,7 +479,33 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
+    /*
+     * The component of the float number is
+     * 1 sign bit + 8 exponent bits + 23 fraction bits.
+     * Sign bit can be get easily by quering the original sign bit;
+     * exponent bit queries the highest bit position in the int;
+     * fraction is the remainders after removing the 1 at the highest position;
+     * 0 is the exception and residuals needs caring about.
+     * */
 
+    unsigned int signBit = 0U;
+    unsigned int exponentBits = 31U;
+    unsigned int fractionBits;
+    unsigned int zero = 0x0U;
+    unsigned int signBitMask = 0x80000000U;
+    if (x == zero) return zero;
+    if (x & signBitMask) {
+        signBit = 0x80000000u;
+        x = -x;
+    }
+    while (!(x & signBitMask)) {
+        exponentBits--;
+        x <<= 1;
+    }
+    fractionBits = ((x & 0x7FFFFFFFU) >> 8);
+    if (((x & 0x1FFU) == 0x180) || ((x & 0xFFU) > 0x80))
+        fractionBits += 1;
+    return (signBit | ((exponentBits + 127) << 23)) + fractionBits;
 }
 
 /*
@@ -493,5 +520,31 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-    return 2;
+
+    /*
+     * The core is to add the exponent part by one;
+     * exceptions are when the number is NaN,
+     * and when the exponent part is 0.
+     * */
+    unsigned int exponentBitsMask;
+    unsigned int exponentAndFractionMask;
+    unsigned int signBitMask;
+    unsigned int exponentBitOne;
+    unsigned int exponentBits;
+    unsigned int signBit;
+    unsigned int result;
+
+    exponentBitsMask = 0x7F800000U;
+    exponentAndFractionMask = 0x7FFFFFFFU;
+    signBitMask = 0x80000000U;
+    exponentBitOne = 0x800000U;
+    exponentBits = uf & exponentBitsMask;
+    signBit = (signBitMask & uf);
+
+    if ((uf & exponentAndFractionMask) >= exponentBitsMask)
+        result = uf;
+    else if (exponentBits == 0)
+        result = (uf << 1) | signBit;
+    else result = uf + exponentBitOne;
+    return result;
 }
